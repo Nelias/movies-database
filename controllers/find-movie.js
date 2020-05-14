@@ -12,7 +12,7 @@ const findMovie = (req, res, next) => {
     if (foundMovies && foundMovies.length) {
       res.status(200).json(foundMovies)
     } else {
-      res.status(404).send('There are no search results for your query')
+      res.status(404).send('There are no results for your search query')
     }
   }
 
@@ -57,38 +57,44 @@ const findMovie = (req, res, next) => {
       if (!searchedGenres) {
         searchResponse([foundRuntimeMovies.sample()])
       } else {
-        const genresMovies = foundRuntimeMovies.filter((movie) => {
-          if (typeof searchedGenres === 'object') {
-            if (movie.genres.length === searchedGenres.length) {
-              return searchedGenres.every((genre) => {
-                return movie.genres.includes(genre)
-              })
-            }
+        const genresMovies = foundRuntimeMovies
+          .filter((movie) => {
+            if (typeof searchedGenres === 'object') {
+              if (movie.genres.length === searchedGenres.length) {
+                return searchedGenres.every((genre) => {
+                  return movie.genres.includes(genre)
+                })
+              }
 
-            if (
-              movie.genres.length < searchedGenres.length &&
-              movie.genres.length > 1
-            ) {
-              const matches = searchedGenres.filter((genre) => {
-                return movie.genres.includes(genre)
-              })
+              if (
+                movie.genres.length < searchedGenres.length &&
+                movie.genres.length > 1
+              ) {
+                const matches = searchedGenres.filter((genre) => {
+                  return movie.genres.includes(genre)
+                })
 
-              return (
-                matches.length < searchedGenres.length &&
-                matches.length > 1 &&
-                matches.length === movie.genres.length
-              )
-            }
+                return (
+                  matches.length < searchedGenres.length &&
+                  matches.length > 1 &&
+                  matches.length === movie.genres.length
+                )
+              }
 
-            if (movie.genres.length === 1) {
-              return searchedGenres.some((genre) => {
-                return movie.genres.includes(genre)
-              })
+              if (movie.genres.length === 1) {
+                return searchedGenres.some((genre) => {
+                  return movie.genres.includes(genre)
+                })
+              }
+            } else {
+              return movie.genres.includes(searchedGenres)
             }
-          } else {
-            return movie.genres.includes(searchedGenres)
-          }
-        })
+          })
+          .sort((a, b) => {
+            if (a.genres.length > b.genres.length) return -1
+            if (a.genres.length < b.genres.length) return 1
+            return 0
+          })
 
         searchResponse(genresMovies)
       }

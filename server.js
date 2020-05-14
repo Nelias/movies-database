@@ -6,10 +6,10 @@ const findMovie = require('./controllers/find-movie')
 const findMovieValidationSchema = require('./validation/find-validation')
 
 app.get('/', (req, res) => {
-  res.send('none')
+  res.send('There are two endpoints available: add-movie and find-movie')
 })
 
-app.put('/add-movie', movieValidationSchema, addMovie)
+app.get('/add-movie', movieValidationSchema, addMovie)
 
 app.get('/find-movie', findMovieValidationSchema, findMovie)
 
