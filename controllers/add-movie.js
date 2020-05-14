@@ -11,6 +11,7 @@ const addMovie = (req, res, next) => {
 
   fs.readFile(jsonPath, (err, data) => {
     if (err) {
+      res.status(500).send('Internal server error')
       throw err
     }
 
