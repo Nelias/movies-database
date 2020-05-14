@@ -10,37 +10,35 @@ const findMovie = (req, res, next) => {
 
   const searchResponse = (foundMovies) => {
     if (foundMovies && foundMovies.length) {
-      res.status(200).json(foundMovies)
+      return res.status(200).json(foundMovies)
     } else {
-      res.status(404).send('There are no results for your search query')
+      return res.status(404).send('There are no results for your search query')
     }
   }
 
   fs.readFile(jsonPath, (err, data) => {
     if (err) {
-      res.status(500).send('Internal server error')
+      res.status(500).send(err)
       throw err
     }
 
     const database = JSON.parse(data)
-
     const searchedGenres = req.query.genres
     const searchedRuntime = req.query.runtime
-
-    if (!searchedGenres && !searchedRuntime) {
-      res.status(200).json([database.movies.sample()])
-    }
-
     const validationErrors = validationResult(req)
 
     if (!validationErrors.isEmpty()) {
       return res.status(422).json({ errors: validationErrors.array() })
     }
 
+    if (!searchedGenres && !searchedRuntime) {
+      return res.status(200).json([database.movies.sample()])
+    }
+
     if (!searchedRuntime) {
       const foundMovies = database.movies.filter((movie) => {
         if (typeof searchedGenres === 'object') {
-          return searchedGenres.every((genre) => movie.genres.includes(genre))
+          return searchedGenres.some((genre) => movie.genres.includes(genre))
         } else {
           return movie.genres.includes(searchedGenres)
         }
