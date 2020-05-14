@@ -25,7 +25,7 @@ const findMovie = (req, res, next) => {
     const database = JSON.parse(data)
 
     if (!req.query.genres && !req.query.runtime) {
-      res.status(200).json(database.movies.sample())
+      res.status(200).json([database.movies.sample()])
     }
 
     const validationErrors = validationResult(req)
@@ -34,17 +34,7 @@ const findMovie = (req, res, next) => {
       return res.status(422).json({ errors: validationErrors.array() })
     }
 
-    if (!req.query.genres) {
-      const foundMovies = database.movies
-        .filter(
-          (movie) =>
-            Number(movie.runtime) >= Number(req.query.runtime) - 10 &&
-            Number(movie.runtime) <= Number(req.query.runtime) + 10
-        )
-        .sample()
-
-      searchResponse(foundMovies)
-    } else if (!req.query.runtime) {
+    if (!req.query.runtime) {
       const foundMovies = database.movies.filter((movie) => {
         if (typeof req.query.genres === 'object') {
           return req.query.genres.every((genre) => movie.genres.includes(genre))
@@ -55,13 +45,16 @@ const findMovie = (req, res, next) => {
 
       searchResponse(foundMovies)
     } else {
-      const foundMovies = database.movies
-        .filter(
-          (movie) =>
-            Number(movie.runtime) >= Number(req.query.runtime) - 10 &&
-            Number(movie.runtime) <= Number(req.query.runtime) + 10
-        )
-        .filter((movie) => {
+      const foundRuntimeMovies = database.movies.filter(
+        (movie) =>
+          Number(movie.runtime) >= Number(req.query.runtime) - 10 &&
+          Number(movie.runtime) <= Number(req.query.runtime) + 10
+      )
+
+      if (!req.query.genres) {
+        searchResponse([foundRuntimeMovies.sample()])
+      } else {
+        const genresMovies = foundRuntimeMovies.filter((movie) => {
           if (typeof req.query.genres === 'object') {
             if (movie.genres.length === 1) {
               return req.query.genres.some((genre) => {
@@ -73,7 +66,8 @@ const findMovie = (req, res, next) => {
           }
         })
 
-      searchResponse(foundMovies)
+        searchResponse(genresMovies)
+      }
     }
   })
 }
