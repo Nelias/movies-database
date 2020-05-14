@@ -24,7 +24,10 @@ const findMovie = (req, res, next) => {
 
     const database = JSON.parse(data)
 
-    if (!req.query.genres && !req.query.runtime) {
+    const searchedGenres = req.query.genres
+    const searchedRuntime = req.query.runtime
+
+    if (!searchedGenres && !searchedRuntime) {
       res.status(200).json([database.movies.sample()])
     }
 
@@ -34,12 +37,12 @@ const findMovie = (req, res, next) => {
       return res.status(422).json({ errors: validationErrors.array() })
     }
 
-    if (!req.query.runtime) {
+    if (!searchedRuntime) {
       const foundMovies = database.movies.filter((movie) => {
-        if (typeof req.query.genres === 'object') {
-          return req.query.genres.every((genre) => movie.genres.includes(genre))
+        if (typeof searchedGenres === 'object') {
+          return searchedGenres.every((genre) => movie.genres.includes(genre))
         } else {
-          return movie.genres.includes(req.query.genres)
+          return movie.genres.includes(searchedGenres)
         }
       })
 
@@ -47,22 +50,43 @@ const findMovie = (req, res, next) => {
     } else {
       const foundRuntimeMovies = database.movies.filter(
         (movie) =>
-          Number(movie.runtime) >= Number(req.query.runtime) - 10 &&
-          Number(movie.runtime) <= Number(req.query.runtime) + 10
+          Number(movie.runtime) >= Number(searchedRuntime) - 10 &&
+          Number(movie.runtime) <= Number(searchedRuntime) + 10
       )
 
-      if (!req.query.genres) {
+      if (!searchedGenres) {
         searchResponse([foundRuntimeMovies.sample()])
       } else {
         const genresMovies = foundRuntimeMovies.filter((movie) => {
-          if (typeof req.query.genres === 'object') {
+          if (typeof searchedGenres === 'object') {
+            if (movie.genres.length === searchedGenres.length) {
+              return searchedGenres.every((genre) => {
+                return movie.genres.includes(genre)
+              })
+            }
+
+            if (
+              movie.genres.length < searchedGenres.length &&
+              movie.genres.length > 1
+            ) {
+              const matches = searchedGenres.filter((genre) => {
+                return movie.genres.includes(genre)
+              })
+
+              return (
+                matches.length < searchedGenres.length &&
+                matches.length > 1 &&
+                matches.length === movie.genres.length
+              )
+            }
+
             if (movie.genres.length === 1) {
-              return req.query.genres.some((genre) => {
+              return searchedGenres.some((genre) => {
                 return movie.genres.includes(genre)
               })
             }
           } else {
-            return movie.genres.includes(req.query.genres)
+            return movie.genres.includes(searchedGenres)
           }
         })
 
