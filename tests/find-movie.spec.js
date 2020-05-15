@@ -27,6 +27,7 @@ describe('find movie controller', () => {
         done()
       })
   })
+
   it('should get all the movies with specific genres', (done) => {
     const queryParams = {
       genres: ['Drama', 'Sci-Fi'],
@@ -50,6 +51,7 @@ describe('find movie controller', () => {
         done()
       })
   })
+
   it('should get a single random movie with a runtime', (done) => {
     const queryParams = {
       runtime: 90,
@@ -67,6 +69,7 @@ describe('find movie controller', () => {
         done()
       })
   })
+
   it('should find all the movies that have all chosen genres and runtime', (done) => {
     const queryParams = {
       genres: ['Drama', 'Thriller'],
@@ -102,9 +105,15 @@ describe('find movie controller', () => {
 
   it('should get an error when there are wrong query parameters provided', (done) => {
     request(server)
-      .get('/find-movie?runtime=23030&genres=Horrror')
+      .get('/find-movie?runtime=130&genres=Horrror')
       .expect(422, done)
 
     request(server).get('/find-movie?genres=Horrror').expect(422, done)
+
+    request(server).get('/find-movie?runtime=abcd').expect(422, done)
+  })
+
+  it('should return 404 if there is no matching movie', (done) => {
+    request(server).get('/find-movie?runtime=5&genres=Horror').expect(404, done)
   })
 })

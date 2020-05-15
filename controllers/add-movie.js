@@ -23,10 +23,9 @@ const addMovie = (req, res, next) => {
       title: req.query.title,
       year: req.query.year,
       runtime: req.query.runtime,
-      genres:
-        typeof req.query.genres === 'object'
-          ? [...req.query.genres]
-          : [req.query.genres],
+      genres: Array.isArray(req.query.genres)
+        ? [...req.query.genres]
+        : [req.query.genres],
       director: req.query.director,
       actors: req.query.actors || null,
       plot: req.query.plot || null,

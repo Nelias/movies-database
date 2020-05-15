@@ -1,39 +1,32 @@
 const { check } = require('express-validator')
-const path = require('path')
-const fs = require('fs')
-const jsonPath = path.join(__dirname, '..', 'database', 'db.json')
+const genresCheck = require('./genres-check')
 
 const movieValidationSchema = [
-  check('title').isString().isLength({ min: 1, max: 255 }),
-  check('year').isInt(),
-  check('runtime').isInt(),
+  check('title')
+    .isString()
+    .withMessage('Title must be a string')
+    .isLength({ min: 1 })
+    .withMessage('Title must be at least 1 character long')
+    .isLength({ max: 255 })
+    .withMessage('Title can not be longer than 255 characters'),
+  check('year').isInt().withMessage('Year must be a number'),
+  check('runtime').isInt().withMessage('Runtime must be a number'),
   check('genres').custom((value) => {
-    const data = fs.readFileSync(jsonPath)
-
-    const database = JSON.parse(data)
-
-    if (typeof value === 'object') {
-      return value.every((genre) => database.genres.includes(genre))
-        ? true
-        : Promise.reject(
-            `One of your genres does not exist! The available genres are: ${database.genres.join(
-              ', '
-            )}`
-          )
-    } else {
-      return database.genres.includes(value)
-        ? true
-        : Promise.reject(
-            `This genre does not exist! The available genres are: ${database.genres.join(
-              ', '
-            )}`
-          )
-    }
+    return genresCheck(value)
   }),
-  check('director').isString().isLength({ min: 1, max: 255 }),
-  check('actors').optional().isString(),
-  check('plot').optional().isString(),
-  check('posterUrl').optional().isString(),
+  check('director')
+    .isString()
+    .withMessage('Director must be a string')
+    .isLength({ min: 1 })
+    .withMessage('Director must be at least 1 character long')
+    .isLength({ max: 255 })
+    .withMessage('Director can not be longer than 255 characters'),
+  check('actors').optional().isString().withMessage('Actors must be a string'),
+  check('plot').optional().isString().withMessage('Plot must be a string'),
+  check('posterUrl')
+    .optional()
+    .isString()
+    .withMessage('posterUrl must be a string'),
 ]
 
 module.exports = movieValidationSchema
