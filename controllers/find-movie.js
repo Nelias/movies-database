@@ -3,7 +3,7 @@ const path = require('path')
 const jsonPath = path.join(__dirname, '..', 'database', 'db.json')
 const { validationResult } = require('express-validator')
 
-const findMovie = (req, res, next) => {
+const findMovie = async (req, res, next) => {
   Array.prototype.sample = function () {
     return this[Math.floor(Math.random() * this.length)]
   }
@@ -37,7 +37,7 @@ const findMovie = (req, res, next) => {
 
     if (!searchedRuntime) {
       const foundMovies = database.movies.filter((movie) => {
-        if (typeof searchedGenres === 'object') {
+        if (Array.isArray(searchedGenres)) {
           return searchedGenres.some((genre) => movie.genres.includes(genre))
         } else {
           return movie.genres.includes(searchedGenres)
@@ -57,7 +57,7 @@ const findMovie = (req, res, next) => {
       } else {
         const genresMovies = foundRuntimeMovies
           .filter((movie) => {
-            if (typeof searchedGenres === 'object') {
+            if (Array.isArray(searchedGenres)) {
               if (movie.genres.length === searchedGenres.length) {
                 return searchedGenres.every((genre) => {
                   return movie.genres.includes(genre)

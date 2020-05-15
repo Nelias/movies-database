@@ -3,7 +3,7 @@ const path = require('path')
 const jsonPath = path.join(__dirname, '..', 'database', 'db.json')
 const { validationResult } = require('express-validator')
 
-const addMovie = (req, res, next) => {
+const addMovie = async (req, res, next) => {
   const errors = validationResult(req)
   if (!errors.isEmpty()) {
     return res.status(422).json({ errors: errors.array() })

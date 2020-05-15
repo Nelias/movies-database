@@ -3,9 +3,12 @@
 Technologies used in this project are:
 
 <div>
-<img src="https://cdn.iconscout.com/icon/free/png-256/node-js-1174925.png" width="70" height="70">
-<img src="https://nicolab.net/assets/img/skills/express-js.png" width="70" height="70">
-<img src="https://opencollective-production.s3-us-west-1.amazonaws.com/149387c0-712d-11e8-a49d-c7c15c79a92c.png" width="70" height="70">
+<img src="https://cdn.iconscout.com/icon/free/png-256/node-js-1174925.png" width="70" height="70" alt="Node.js">
+<img src="https://nicolab.net/assets/img/skills/express-js.png" width="70" height="70" alt="Express.js">
+<img src="https://opencollective-production.s3-us-west-1.amazonaws.com/149387c0-712d-11e8-a49d-c7c15c79a92c.png" width="70" height="70" alt="Express-Validator">
+<img src="https://images.xenonstack.com/blog/Jest-For-Unit-Testing.png" width="70" height="70" alt="Jest">
+<img src="https://s3.amazonaws.com/media-p.slid.es/uploads/338958/images/1496345/supertest.png" width="70" height="70" alt="Supertest">
+
 </div>
 
 ## API endpoints
@@ -70,3 +73,7 @@ Use it
 ```
 curl 127.0.0.1:8080
 ```
+
+## Tests
+
+Run `npm test`

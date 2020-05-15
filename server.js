@@ -13,4 +13,8 @@ app.get('/add-movie', movieValidationSchema, addMovie)
 
 app.get('/find-movie', findMovieValidationSchema, findMovie)
 
-app.listen('8080')
+const server = app.listen(8080, () => {
+  console.log('Server running on port 8080')
+})
+
+module.exports = server
