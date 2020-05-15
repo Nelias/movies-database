@@ -1,6 +1,6 @@
 const fs = require('fs')
 const path = require('path')
-const jsonPath = path.join(__dirname, '..', 'database', 'db.json')
+const databasePath = path.join(__dirname, '..', 'database', 'db.json')
 const { validationResult } = require('express-validator')
 
 const findMovie = async (req, res, next) => {
@@ -16,7 +16,7 @@ const findMovie = async (req, res, next) => {
     }
   }
 
-  fs.readFile(jsonPath, (err, data) => {
+  fs.readFile(databasePath, (err, data) => {
     if (err) {
       res.status(500).send(err)
       throw err

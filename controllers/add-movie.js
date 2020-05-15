@@ -1,6 +1,6 @@
 const fs = require('fs')
 const path = require('path')
-const jsonPath = path.join(__dirname, '..', 'database', 'db.json')
+const databasePath = path.join(__dirname, '..', 'database', 'db.json')
 const { validationResult } = require('express-validator')
 
 const addMovie = async (req, res, next) => {
@@ -9,7 +9,7 @@ const addMovie = async (req, res, next) => {
     return res.status(422).json({ errors: errors.array() })
   }
 
-  fs.readFile(jsonPath, (err, data) => {
+  fs.readFile(databasePath, (err, data) => {
     if (err) {
       res.status(500).send('Internal server error')
       throw err
@@ -34,7 +34,7 @@ const addMovie = async (req, res, next) => {
 
     database.movies.push(newMovie)
 
-    fs.writeFile(jsonPath, JSON.stringify(database, null, 2), () => {
+    fs.writeFile(databasePath, JSON.stringify(database, null, 2), () => {
       res.status(200).send('New movie added successfully')
     })
   })
