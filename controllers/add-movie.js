@@ -3,15 +3,16 @@ const path = require('path')
 const databasePath = path.join(__dirname, '..', 'database', 'db.json')
 const { validationResult } = require('express-validator')
 
-const addMovie = async (req, res, next) => {
-  const errors = validationResult(req)
-  if (!errors.isEmpty()) {
-    return res.status(422).json({ errors: errors.array() })
+const addMovie = (req, res, next) => {
+  const validationErrors = validationResult(req)
+
+  if (!validationErrors.isEmpty()) {
+    return res.status(422).json({ errors: validationErrors.array() })
   }
 
   fs.readFile(databasePath, (err, data) => {
     if (err) {
-      res.status(500).send('Internal server error')
+      res.status(500).send(err)
       throw err
     }
 

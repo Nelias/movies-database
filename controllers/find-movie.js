@@ -3,7 +3,13 @@ const path = require('path')
 const databasePath = path.join(__dirname, '..', 'database', 'db.json')
 const { validationResult } = require('express-validator')
 
-const findMovie = async (req, res, next) => {
+const findMovie = (req, res, next) => {
+  const validationErrors = validationResult(req)
+
+  if (!validationErrors.isEmpty()) {
+    return res.status(422).json({ errors: validationErrors.array() })
+  }
+
   Array.prototype.sample = function () {
     return this[Math.floor(Math.random() * this.length)]
   }
@@ -25,11 +31,6 @@ const findMovie = async (req, res, next) => {
     const database = JSON.parse(data)
     const searchedGenres = req.query.genres
     const searchedRuntime = req.query.runtime
-    const validationErrors = validationResult(req)
-
-    if (!validationErrors.isEmpty()) {
-      return res.status(422).json({ errors: validationErrors.array() })
-    }
 
     if (!searchedGenres && !searchedRuntime) {
       return res.status(200).json([database.movies.sample()])
