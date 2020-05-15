@@ -1,4 +1,4 @@
-# movies-database
+# Movies Database
 
 Technologies used in this project are:
 
@@ -8,7 +8,6 @@ Technologies used in this project are:
 <img src="https://opencollective-production.s3-us-west-1.amazonaws.com/149387c0-712d-11e8-a49d-c7c15c79a92c.png" width="70" height="70" alt="Express-Validator">
 <img src="https://images.xenonstack.com/blog/Jest-For-Unit-Testing.png" width="70" height="70" alt="Jest">
 <img src="https://s3.amazonaws.com/media-p.slid.es/uploads/338958/images/1496345/supertest.png" width="70" height="70" alt="Supertest">
-
 </div>
 
 ## API endpoints

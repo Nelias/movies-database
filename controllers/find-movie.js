@@ -18,7 +18,7 @@ const findMovie = (req, res, next) => {
     if (foundMovies && foundMovies.length) {
       return res.status(200).json(foundMovies)
     } else {
-      return res.status(404).send('There are no results for your search query')
+      return res.status(404).send('There are no results for your query!')
     }
   }
 

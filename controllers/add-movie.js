@@ -35,7 +35,7 @@ const addMovie = (req, res, next) => {
     database.movies.push(newMovie)
 
     fs.writeFile(databasePath, JSON.stringify(database, null, 2), () => {
-      res.status(200).send('New movie added successfully')
+      res.status(200).send('New movie added successfully!')
     })
   })
 }
