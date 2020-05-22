@@ -1,20 +1,17 @@
-const fs = require('fs')
+const fs = require('fs').promises
 const path = require('path')
 const databasePath = path.join(__dirname, '..', 'database', 'db.json')
 const { validationResult } = require('express-validator')
 
-const addMovie = (req, res, next) => {
+const addMovie = async (req, res, next) => {
   const validationErrors = validationResult(req)
 
   if (!validationErrors.isEmpty()) {
     return res.status(422).json({ errors: validationErrors.array() })
   }
 
-  fs.readFile(databasePath, (err, data) => {
-    if (err) {
-      res.status(500).send(err)
-      throw err
-    }
+  try {
+    const data = await fs.readFile(databasePath)
 
     const database = JSON.parse(data)
 
@@ -37,7 +34,9 @@ const addMovie = (req, res, next) => {
     fs.writeFile(databasePath, JSON.stringify(database, null, 2), () => {
       res.status(200).send('New movie added successfully!')
     })
-  })
+  } catch (err) {
+    return res.status(500).send(err)
+  }
 }
 
 module.exports = addMovie

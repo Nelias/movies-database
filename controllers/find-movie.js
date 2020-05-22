@@ -1,9 +1,9 @@
-const fs = require('fs')
+const fs = require('fs').promises
 const path = require('path')
 const databasePath = path.join(__dirname, '..', 'database', 'db.json')
 const { validationResult } = require('express-validator')
 
-const findMovie = (req, res, next) => {
+const findMovie = async (req, res, next) => {
   const validationErrors = validationResult(req)
 
   if (!validationErrors.isEmpty()) {
@@ -22,11 +22,8 @@ const findMovie = (req, res, next) => {
     }
   }
 
-  fs.readFile(databasePath, (err, data) => {
-    if (err) {
-      res.status(500).send(err)
-      throw err
-    }
+  try {
+    const data = await fs.readFile(databasePath)
 
     const database = JSON.parse(data)
     const searchedGenres = req.query.genres
@@ -98,7 +95,9 @@ const findMovie = (req, res, next) => {
         searchResponse(genresMovies)
       }
     }
-  })
+  } catch (err) {
+    return res.status(500).send(err)
+  }
 }
 
 module.exports = findMovie
